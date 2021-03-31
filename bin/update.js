@@ -8,12 +8,12 @@ let { get } = require('axios')
 async function main ({ argv }) {
   let version = argv[2]
   if (!version) {
-    console.error('Must specify Bitcoin Core version')
+    console.error('Must specify Litecoin Core version')
     return 1
   }
 
   let shasumsPath = join(__dirname, 'SHA256SUMS.asc')
-  let shasumsUrl = `https://bitcoin.org/bin/bitcoin-core-${version}/SHA256SUMS.asc`
+  let shasumsUrl = `https://download.litecoin.org/litecoin-${version}/SHA256SUMS.asc`
   try {
     let res = await get(shasumsUrl)
     writeFileSync(shasumsPath, res.data)

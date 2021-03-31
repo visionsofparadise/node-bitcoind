@@ -1,17 +1,17 @@
-# bitcoind
+# litecoind
 
-Run a Bitcoin Core full node from Node.js.
+Run a Litecoin Core full node from Node.js.
 
-On install, this package downloads a prebuilt binary from the [official Bitcoin Core releases](https://bitcoin.org/en/download), and checks it against a known SHA256 hash.
+On install, this package downloads a prebuilt binary from the [official Litecoin Core releases](https://litecoin.org/), and checks it against a known SHA256 hash.
 
 ## Usage
-`npm install bitcoind`
+`npm install litecoind`
 
 ```js
-let bitcoind = require('bitcoind')
+let litecoind = require('litecoind')
 
 // start the full node
-let node = bitcoind({
+let node = litecoind({
   // options are turned into CLI args
   testnet: true,
   rpcport: 12345
@@ -24,18 +24,18 @@ node.stdout.pipe(process.stdout)
 node.rpc.getNetworkInfo().then(console.log)
 ```
 
-### `bitcoind(opts)`
+### `litecoind(opts)`
 
-Spawns a Bitcoin Core full node.
+Spawns a Litecoin Core full node.
 
-Returns a `ChildProcess` object representing the `bitcoind` process. It has an `rpc` property which is a client for the node's RPC server (from the [bitcoin-core](https://github.com/ruimarinho/bitcoin-core) package).
+Returns a `ChildProcess` object representing the `litecoind` process. It has an `rpc` property which is a client for the node's RPC server (from the [bitcoin-core](https://github.com/ruimarinho/bitcoin-core) package).
 
-`opts` may be an object containing options passed to bitcoind as CLI arguments (you may use any flag supported by bitcoind). To see all supported options, run `npx bitcoind --help`.
+`opts` may be an object containing options passed to litecoind as CLI arguments (you may use any flag supported by litecoind). To see all supported options, run `npx litecoind --help`.
 
 ### CLI
 
-Installing the package also exposes a `bitcoind` command, so you can use this as an easy way to install bitcoin:
+Installing the package also exposes a `litecoind` command, so you can use this as an easy way to install litecoin:
 ```
-$ npm i -g bitcoind
-$ bitcoind -version
+$ npm i -g litecoind
+$ litecoind -version
 ```

@@ -18,14 +18,14 @@ const tar = require('tar')
 const rimraf = require('rimraf').sync
 
 let versionPath = join(__dirname, 'version')
-let bitcoindVersion = readFileSync(versionPath, 'utf8').trim()
+let litecoindVersion = readFileSync(versionPath, 'utf8').trim()
 
 let cacheBinPath = join(
   homedir(),
-  '.node-bitcoind',
-  `bitcoind_${bitcoindVersion}`
+  '.node-litecoind',
+  `litecoind_${litecoindVersion}`
 )
-let binPath = join(__dirname, 'bitcoind')
+let binPath = join(__dirname, 'litecoind')
 try {
   accessSync(cacheBinPath)
   // binary was already downloaded
@@ -35,8 +35,8 @@ try {
   if (err.code !== 'ENOENT') throw err
 }
 
-console.log(`downloading Bitcoin Core v${bitcoindVersion}`)
-let binaryDownloadUrl = getBinaryDownloadURL(bitcoindVersion)
+console.log(`downloading Litecoin Core v${litecoindVersion}`)
+let binaryDownloadUrl = getBinaryDownloadURL(litecoindVersion)
 get(binaryDownloadUrl, { responseType: 'stream' }).then((res) => {
   if (res.status !== 200) {
     throw Error(`Request failed, status: ${res.status}`)
@@ -51,8 +51,8 @@ get(binaryDownloadUrl, { responseType: 'stream' }).then((res) => {
     total: length / 1e6 * 8
   })
 
-  let extractPath = join(__dirname, `bitcoin-${bitcoindVersion}`)
-  let tempBinPath = join(extractPath, 'bin/bitcoind')
+  let extractPath = join(__dirname, `litecoin-${litecoindVersion}`)
+  let tempBinPath = join(extractPath, 'bin/litecoind')
   let shasumPath = join(__dirname, 'SHA256SUMS.asc')
 
   res.data
@@ -60,7 +60,7 @@ get(binaryDownloadUrl, { responseType: 'stream' }).then((res) => {
     .pipe(tar.extract({
       cwd: __dirname,
       filter (path, entry) {
-        return path === `bitcoin-${bitcoindVersion}/bin/bitcoind`
+        return path === `litecoin-${litecoindVersion}/bin/litecoind`
       }
     }))
   // TODO: windows unzip
@@ -91,11 +91,11 @@ get(binaryDownloadUrl, { responseType: 'stream' }).then((res) => {
     }
 
     if (actualHash !== expectedHash) {
-      console.error('ERROR: hash of downloaded Bitcoin Core binaries did not match')
+      console.error('ERROR: hash of downloaded Litecoin Core binaries did not match')
       process.exit(1)
     }
 
-    console.log('✅ verified hash of Bitcoin Core binaries\n')
+    console.log('✅ verified hash of Litecoin Core binaries\n')
     renameSync(tempBinPath, binPath)
     rimraf(extractPath)
 
@@ -107,10 +107,10 @@ get(binaryDownloadUrl, { responseType: 'stream' }).then((res) => {
   res.data.on('data', (chunk) => bar.tick(chunk.length / 1e6 * 8))
 })
 
-// gets a URL to the .tar.gz or .zip, hosted on bitcoin.org
+// gets a URL to the .tar.gz or .zip, hosted on litecoin.org
 function getBinaryDownloadURL (version) {
   function url (filename) {
-    return `https://bitcoin.org/bin/bitcoin-core-${version}/bitcoin-${version}-${filename}`
+    return `https://download.litecoin.org/litecoin-${version}/${filename}`
   }
 
   function throwUnknownArchError () {
@@ -119,17 +119,17 @@ function getBinaryDownloadURL (version) {
 
   switch (process.platform) {
     case 'darwin':
-      return url('osx64.tar.gz')
+      return url(`osx/litecoin-${version}-osx64.tar.gz`)
     case 'linux':
       switch (process.arch) {
         case 'x32':
-          return url('i686-pc-linux-gnu.tar.gz')
+          return url(`linux/litecoin-${version}-i686-pc-linux-gnu.tar.gz`)
         case 'x64':
-          return url('x86_64-linux-gnu.tar.gz')
+          return url(`linux/litecoin-${version}-x86_64-linux-gnu.tar.gz`)
         case 'arm':
-          return url('arm-linux-gnueabihf.tar.gz')
+          return url(`linux/litecoin-${version}-arm-linux-gnueabihf.tar.gz`)
         case 'arm64':
-          return url('aarch64-linux-gnu.tar.gz')
+          return url(`linux/litecoin-${version}-aarch64-linux-gnu.tar.gz`)
         default:
           throwUnknownArchError()
       }

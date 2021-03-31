@@ -1,18 +1,18 @@
 'use strict'
 
 let { randomBytes } = require('crypto')
-let debug = require('debug')('bitcoind')
+let debug = require('debug')('litecoind')
 let _spawn = require('cross-spawn')
 let RpcClient = require('bitcoin-core')
 let flags = require('./flags.js')
 
-const logging = process.env.BITCOIND_LOG
-const binPath = process.env.BITCOIND_BINARY ||
-  require.resolve('../bin/bitcoind')
+const logging = process.env.LITECOIND_LOG
+const binPath = process.env.LITECOIND_BINARY ||
+  require.resolve('../bin/litecoind')
 
 function spawn (opts) {
   let args = flags(opts)
-  debug('spawning: bitcoind ' + args.join(' '))
+  debug('spawning: litecoind ' + args.join(' '))
   let start = Date.now()
   let child = _spawn(binPath, args)
 
@@ -40,7 +40,7 @@ function spawn (opts) {
           let stderr = child.stderr.read().toString()
           err = Error(stderr)
         } else {
-          err = Error(`bitcoind exited with code ${code}`)
+          err = Error(`litecoind exited with code ${code}`)
         }
         return reject(err)
       }
@@ -59,7 +59,7 @@ function maybeError (res) {
     return res.then(maybeError)
   }
   if (res.code !== 0) {
-    throw Error(`bitcoind exited with code ${res.code}`)
+    throw Error(`litecoind exited with code ${res.code}`)
   }
 }
 
@@ -70,8 +70,8 @@ function node (opts = {}) {
     rpcpassword: randomString()
   }, opts)
 
-  if (opts.rpcport == null && opts.regtest) {
-    opts.rpcport = 18332
+  if (opts.rpcport == null) {
+    opts.rpcport = opts.regtest ? 19332 : 9333
   }
 
   let child = spawn(opts)
