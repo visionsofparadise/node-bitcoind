@@ -1,6 +1,6 @@
 {
 	"name": "litecoind",
-	"version": "1.1.1",
+	"version": "1.1.2",
 	"description": "Spawn a Litecoin Core node",
 	"main": "index.js",
 	"bin": {
